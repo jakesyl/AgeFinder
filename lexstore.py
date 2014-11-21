@@ -26,14 +26,17 @@ def insert(phrase, group):
 	phrase = phrase.split(' ')
 	for word in phrase:
 		c.execute(''' SELECT frequency FROM db WHERE word = ? and groups = ?;''', (word, group,))
-		freq = c.fetchall()
-		if freq == empty:
+		freq = c.fetchone()
+		print("frequency ")
+		print(freq)
+		if freq == None or freq == empty:
 			#c.execute('''INSERT INTO ?  (word, frequency) VALUES ?, 1''', (group, word,))
-			c.execute('''INSERT INTO db (word, frequency) VALUES (?, 1);''', (word,))
+			c.execute('''INSERT INTO db (word, frequency, groups) VALUES (?, 1, ?);''', (word, group,))
 
 		else:
-			freq += 1 # New Frequency 
-			c.execute(''' UPDATE db WHERE word = ? and groups = ? SET frequency = ?;''', (word, group, freq,))
+			freq = freq[0] + 1# New Frequency
+			print(freq) 
+			c.execute(''' UPDATE db SET frequency = ? WHERE word = ? and groups = ?;''', (freq,word, group,))
 		conn.commit()
 		return True
 #TESTS
